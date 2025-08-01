@@ -21,7 +21,11 @@ namespace ProjectApi.Controllers
             this.cityRepository = cityRepository;
         }
 
-
+        /// <summary>
+        /// To get available cities
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         [HttpGet("{id:int}")]
         public async Task<ActionResult<IEnumerable<City>>> GetCities(int id)
         {
