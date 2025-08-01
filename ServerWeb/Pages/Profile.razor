@@ -1,0 +1,240 @@
+﻿@page "/profile"
+
+@page "/profileUpdate"
+
+@inherits ProfileBase
+
+
+<div class="form-row" align="left">
+    <div>
+        <a class="btn btn-success" href="/posts"> <h4><span class="oi oi-home">&nbsp; Home</span></h4></a>
+        
+    </div>
+</div>
+<div align="right">
+    
+    <a href="/identity/account/logout" class="btn btn-outline-danger"><h4><span class="oi oi-account-logout">&nbsp; Logout</span></h4></a>
+</div>
+
+<div class="form-group row">
+    <div class="col-sm-6">
+        @if (User == null || User.Country == null || User.City == null)
+        {
+            <div class="spinner"></div>
+
+        }
+        else
+        {
+
+            <div style="background-color:azure">
+                <br />
+
+                <div align="center">
+
+
+                    <img src="@User.ImageUrl" height="300" width="300" />
+
+                </div>
+                <br />
+                <table align="center">
+                    <tr>
+                        <td><h5>Name</h5></td>
+                        <td> <h5><i><b>&nbsp;&nbsp;@User.UserName</b></i></h5></td>
+                    </tr>
+                    <br />
+
+                    <tr>
+                        <td><h5>Date Of Birth</h5></td>
+                        <td><h5><i><b>&nbsp;&nbsp;@User.DateOfBirth</b></i></h5></td>
+                    </tr>
+                    <br />
+
+                    <tr>
+                        <td><h5>Country</h5></td>
+                        <td><h5><i><b>&nbsp;&nbsp;@User.Country.CountryName</b></i></h5></td>
+                    </tr>
+                    <br />
+
+                    <tr>
+                        <td><h5>City</h5></td>
+                        <td><h5><i><b>&nbsp;&nbsp;@User.City.CityName</b></i></h5></td>
+                    </tr>
+                    <br />
+
+                    <tr>
+                        <td><h5>Mobile Number</h5></td>
+                        <td><h5><i><b>&nbsp;&nbsp;@User.MobileNumber</b></i></h5></td>
+                    </tr>
+                    <br />
+
+
+
+                </table>
+                <br />
+
+
+                <div align="center">
+                    <button type="button" class="btn btn-dark" @onclick="Edit_Click">&nbsp; Edit Profile</button>
+
+                </div>
+            </div>
+        }
+
+
+    </div>
+    <div align="center">
+        
+    </div>
+
+
+    @if (Posts.Count == 0)
+    {
+        <div align="right">
+            <h4>No Posts Yet....! Post Something </h4>
+        </div>
+
+    }
+    else
+    {
+
+        <div class="col-sm-4" align="right" style="background-color:lightcyan">
+
+            <div>
+
+                <table align="center">
+                    <br />
+                    <h3><u><b>Posts</b></u></h3>
+                    @foreach (var post in Posts)
+                    {
+                        <tr>
+                            <div class="card-deck">
+
+                                <div class="card m-5">
+                                    @if (post.Image != null)
+                                    {
+
+                                        Photo = Convert.ToBase64String(post.Image);
+
+                                        post.ImageUrl = string.Format("data:image/png;base64,{0}", Photo);
+                                        <div>
+                                            <img src=@post.ImageUrl width="450" height="400" />
+                                        </div>
+                                    }
+                                    <div class="card-footer">
+                                        <h3> @post.Message</h3>
+
+                                    </div>
+                                    <div>
+                                        <a href="@($"/addpost/{post.PostId}")">Edit Post</a>
+                                    </div>
+                                </div>
+
+                            </div>
+                        </tr>
+
+                    }
+
+
+                </table>
+
+            </div>
+        </div>
+    }
+
+<div class="col-sm-2">
+    <div align="center">
+        <br />
+        <div align="left">
+            <h3><b>Friends</b></h3>
+        </div>
+        <div align="right">
+            <button @onclick="@Show_Requests"><span class="oi oi-bell">Requests</span></button>
+        </div>
+
+        <hr />
+    </div>
+    @if (PersonList != null)
+    {
+        if(PersonList.Any())
+        { 
+        <div>
+            <table align="center" id="Table1">
+                @foreach (var person in PersonList)
+                {
+
+                    <tr>
+                        <h5>
+                            <span class="oi oi-person"></span>
+                            <b>@person.UserName</b>
+                        </h5>
+                    </tr>
+                    <br />
+                }
+            </table>
+        </div>
+        }
+        else
+        {
+         <div>
+            <h3>No Friends...</h3>
+         </div>
+        }
+    }
+   
+    @if (RequestsList != null)
+    {
+        if (Show == true)
+        {
+
+
+            <div>
+                <div align="left">
+                    <div align="right">
+                        <button @onclick="@Requests_Update"><span class="oi oi-circle-x" align="right"></span></button>
+                    </div>
+                    <h4><u> Requests</u></h4>
+                </div>
+
+                <hr />
+                @if(RequestsList.Any())
+                { 
+                <table align="center" id="Table1">
+                    @foreach (var request in RequestsList)
+                    {
+
+                        <tr>
+                            <h5>
+                                <span class="oi oi-person"></span>
+                                <b>@request.UserName</b>
+                            </h5>
+                            <button @onclick="() => OnConfirmationChange(request)"> Accept </button>&nbsp;&nbsp;
+                            @*<button @onclick="() => OnConfirmationChange(request)"> Cancel </button>*@
+                        </tr>
+                        <br />
+                    }
+                </table>
+                }
+                    else
+                    {
+                        <div>
+                            <h3>No Requests..</h3>
+                        </div>
+                    }
+            </div>
+        }
+    }
+    else
+    {
+        <div>
+            <h3>No Requests</h3>
+        </div>
+    }
+</div>
+</div>
+
+<EditProfile @ref="EditConfirmation" ConfirmationChanged="ConfirmEdit_Click"></EditProfile>
+
+
+
+
+

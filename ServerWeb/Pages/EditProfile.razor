@@ -1,0 +1,139 @@
+﻿@page "/editprofile"
+
+@inherits EditProfileBase
+
+@using ProjectModels 
+
+@if (ShowConfirmation)
+{
+    <div class="modal fade show d-lg-block" id="exampleModal" tabindex="-1" role="dialog" >
+        <div class="modal-dialog" role="document">
+            <div class="modal-content" width="100px">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="exampleModalLabel">@ConfirmationTitle</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close"
+                            @onclick="() => OnConfirmationChange(false)">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+
+                <EditForm Model="@User" >
+                    <DataAnnotationsValidator/>
+                        <ValidationSummary />
+                        <div class="form-group row">
+                            <label for="name" class="col-sm-4 col-form-label">
+                                &nbsp;&nbsp;&nbsp;&nbsp;User Name
+                            </label>
+                            <div class="col-sm-6">
+                                <InputText id="name" class="form-control"
+                                           @bind-Value="User.UserName" readonly />
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="mobile" class="col-sm-4 col-form-label">
+                                &nbsp;&nbsp;&nbsp;&nbsp;Mobile Nmber
+                            </label>
+                            <div class="col-sm-6">
+                                <InputNumber id="mobile" class="form-control" placeholder="Mobile Number"
+                                             @bind-Value="User.MobileNumber" />
+                                <ValidationMessage For="@(() => User.MobileNumber)" />
+                            </div>
+                        </div>
+
+                        <div class="form-group row">
+                            <label for="dob" class="col-sm-4 col-form-label">
+                                &nbsp;&nbsp;&nbsp;&nbsp;Date Of Birth
+                            </label>
+                            <div class="col-sm-6">
+                                <InputDate id="posts" class="form-control" placeholder="dd-mm-yyyy"
+                                           @bind-Value="User.DateOfBirth" />
+
+                            </div>
+                        </div>
+                        <div class="form-group row">
+                            <label for="gender" class="col-sm-4 col-form-label">
+                                &nbsp;&nbsp;&nbsp;&nbsp;  Gender
+                            </label>
+                            <div class="col-sm-8">
+
+                                <InputRadioGroup @bind-Value="User.Gender">
+                                    @foreach (var gender in Enum.GetValues(typeof(Gender)))
+                                        {
+                                        <InputRadio Value="@gender">@gender</InputRadio>
+                                        <option style="display:inline">@gender&nbsp;&nbsp;&nbsp;</option>
+                                        }
+                                </InputRadioGroup>
+
+                            </div>
+                        </div>
+                        @*Country DropDown*@
+
+                        <div class="form-group row">
+                            <label for="country" class="col-sm-4 col-form-label">
+                                &nbsp;&nbsp;&nbsp;&nbsp; Country
+                            </label>
+                            <div class="col-sm-6">
+
+                                <InputSelect id="country" class="form-control"
+                                             ValueExpression="@(() => CountryId)"
+                                             Value="@CountryId"
+                                             ValueChanged="@((string value)=>CountryChanged(value))">
+
+                                    <option value="0">-- Select Country --</option>
+                                    @foreach (var country in Countries)
+                                    {
+                                        <option value="@country.CountryID">@country.CountryName</option>
+                                    }
+                                </InputSelect>
+                                <ValidationMessage For="@(() => User.CountryId)" />
+                            </div>
+                        </div>
+
+                        @*City DropDown *@
+
+                        <div class="form-group row">
+                            <label for="City" class="col-sm-4 col-form-label">
+                                &nbsp;&nbsp;&nbsp;&nbsp; City
+                            </label>
+                            <div class="col-sm-6">
+                                <InputSelect id="division" class="form-control" Value="@CityId"
+                                             ValueExpression="@(() =>CityId)"
+                                             ValueChanged="@((string value)=>CityChanged(value))">
+                                    <option value="0">-- Select City --</option>
+
+                                    @foreach (var city in Cities)
+                                    {
+                                        <option value="@city.CityId">@city.CityName</option>
+                                    }
+
+                                </InputSelect>
+                                <ValidationMessage For="@(() => User.CityID)" />
+                            </div>
+                        </div>
+
+                        @*//Image Upload*@
+                        <div class="form-group row">
+                            <label for="Picture" class="col-sm-4 col-form-label">
+                                &nbsp;&nbsp;&nbsp;&nbsp;Profile Pic
+                            </label>
+                            <div class="col-sm-6">
+                                <InputFile OnChange="HandleImageUpload"></InputFile>
+                            </div>
+
+                        </div>
+                    
+                </EditForm>
+                <div class="modal-footer">
+                    <button type="submit" class="btn btn-dark"
+                            @onclick="() => OnConfirmationChange(true)">
+                        <span class="oi oi-arrow-circle-top">&nbsp;Update</span>
+                    </button>
+                </div>
+               
+            </div>
+        </div>
+    </div>
+}
+
+

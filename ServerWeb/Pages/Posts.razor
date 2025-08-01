@@ -1,0 +1,156 @@
+﻿@page "/posts"
+
+@inherits PostBase
+
+@attribute [Authorize]
+
+
+
+@if (Posts == null)
+{
+    <div class="spinner"></div>
+}
+else
+{
+<div>
+    <div>
+        <h3>&nbsp;&nbsp;&nbsp;Welcome&nbsp;<b> @Username</b></h3>
+    </div>
+    @if (PageUser.MobileNumber == 0)
+    {
+        <div class="alert alert-success">
+            <strong>@NumberReminder</strong>
+        </div>
+    }
+
+    <div align="right"><b><a class="btn btn-info" href="/profile" title="Profile"><span class="oi oi-person">&nbsp;Profile</span></a></b></div>
+
+</div>
+    <div align="left">
+        <a href="/addpost" class="btn btn-outline-success"><span class="oi oi-pencil">&nbsp; New Post</span></a>
+    </div>
+    <hr />
+    <div class="row">
+        <div class="col-sm-1"></div>
+        <div class="col">
+            <table align="center">
+
+                @foreach (var post in Posts)
+                {
+
+                    <tr>
+                        <div class="card-deck" style="background-color:lightslategray">
+                            <div class="card m-auto">
+                                <div class="card-header">
+                                    <div class="form-row">
+                                        @if (post.User.ProfilePic != null)
+                                        {
+                                            UserImageIcon = Convert.ToBase64String(post.User.ProfilePic);
+
+                                            post.User.ImageUrl = string.Format("data:image/png;base64,{0}", UserImageIcon);
+                                            <div>
+                                                <img src=@post.User.ImageUrl style="object-fit:cover; border-radius:50% ;height:50px;width:50px"   />
+                                            </div>
+                                        }
+                                        <div>
+                                            <h4>&nbsp;&nbsp; @post.User.UserName</h4>
+                                        </div>
+                                    </div>
+
+                                </div>
+                                <br />
+                                @if (post.Image != null)
+                                {
+                                    Photo = Convert.ToBase64String(post.Image);
+
+                                    post.ImageUrl = string.Format("data:image/png;base64,{0}", Photo);
+                                    <div>
+                                        <img src=@post.ImageUrl width="800" height="100%" />
+                                    </div>
+                                }
+                                <div class=" card-footer">
+                                    <h3> @post.Message</h3>
+                                </div>
+
+                            </div>
+                        </div>
+                    </tr>
+                    <br />
+                }
+
+            </table>
+        </div>
+        <div class="col-sm-1">
+
+        </div>
+        <div class="col-sm-4" align="right">
+            
+            <div align="center">
+               <u><b> Friends Search</b></u>
+                
+                <EditForm Model="@Searchresult">
+                    <DataAnnotationsValidator/>
+                    <div class="form-group row">
+                        <label for="name" class="col-sm-6">
+                            &nbsp;&nbsp;&nbsp;&nbsp;<i>Enter UserName to search</i>
+                        </label>
+                        <div class="col-sm-4">
+                            <InputText id="name" class="form-control"
+                                       @bind-Value="@SearchName" />
+                            <br />
+                            @if (SearchName != null)
+                            {
+                                <div align="right">
+                                    <button class="btn-dark" @onclick="@Search">Search</button>
+                                </div>
+                            }
+
+                        </div>
+                        <hr />
+                       
+
+                    </div>
+                    <div class="form-group row">
+                        <div align="right">
+                            @if (Searchresult != null)
+                            {
+                                @if (Searchresult.UserId != 0)
+                                {
+                                    <h5>Results..</h5>
+                                    <div class="col-sm-6" align="left">
+                                        <div class="form-group row">
+                                            <div class="col-sm-6">
+                                                <img src="@Searchresult.ImageUrl" style="object-fit:cover; border-radius:50% ;height:50px;width:50px" class="figure-img" />
+
+                                            </div>
+                                            <label for="name" class="col-sm-6 col-form-label">
+                                                &nbsp;&nbsp;&nbsp;&nbsp; <b> @Searchresult.UserName</b>
+                                            </label>
+                                            <div class="col-sm-9" align="center">
+                                                <button @onclick="FriendRequest" style="visibility:@AddVisibility"><span class="oi oi-plus"> Add Friend</span></button>
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <p>@ErrorMessage</p>
+                                }
+                             }
+
+                        </div>
+                    </div>
+                    
+                </EditForm>
+               
+            </div>
+            
+            
+
+        </div>
+        
+    </div>
+    
+}
+

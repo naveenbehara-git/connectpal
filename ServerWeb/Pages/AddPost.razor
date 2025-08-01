@@ -1,0 +1,48 @@
+﻿@page "/addpost"
+
+@page "/addpost/{id}"
+
+@inherits AddPostBase
+
+<h3>Create Post</h3>
+
+<EditForm Model="@Post" OnValidSubmit="HandleValidSubmit">
+    <table align="center" width="1000">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+        <div class="form-group row">
+            <div align="center">
+                <img src="@Post.ImageUrl" height="400" width="400" />
+            </div>
+        </div>
+        <div class="col-sm-6">
+            <InputFile OnChange="HandleImageUpload"></InputFile>
+        </div>
+        <div class="form-group row">
+            <label for="message" class="col-sm-4 col-form-label">
+                &nbsp;&nbsp;&nbsp;&nbsp; Message
+            </label>
+        </div>
+        <div class="col-sm-6">
+            <InputText id="message" class="form-control"
+                       @bind-Value="Post.Message" />
+
+        </div>
+        <br />
+
+    </table>
+    <div align="center">
+        @if (postid != 0)
+        {
+            <button class="badge-danger" @onclick="@Delete_Click">Delete</button>
+            <button class="badge-success" @onclick="@Update_Post">Update</button>
+        }
+        else
+        {
+            <button class="btn btn-primary" type="submit"> Post </button>
+        }
+        
+        <a href="/posts" class="btn btn-outline-dark">Cancel</a>
+    </div>
+</EditForm>
+
